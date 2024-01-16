@@ -1,0 +1,16 @@
+version: '2'
+services:
+  store-monitoring:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: store-monitoring:0.0.1
+    container_name: store-monitoring
+    restart: always
+    ports:
+      - "8880:80"
+      - "1777:1777"
+    volumes:
+      - ./:/var/www/store_monitoring
+    working_dir: /var/www/store_monitoring
+    #network_mode: bridge
