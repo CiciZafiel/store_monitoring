@@ -14,8 +14,8 @@
                             <th scope="col">WarehouseCode</th>
                             <th scope="col">Store</th>
                             <th scope="col">IP</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Refresh</th>
+                            <th scope="col">Network Status</th>
+                            <th scope="col">Ping</th>
                             </tr>
                         </thead>
                         <tbody id="storeAvailabilityTBL">

@@ -2,7 +2,10 @@
     <div>
         <div class="container-fluid pb-3">
             <div class="d-grid gap-3" style="grid-template-columns: 1fr;">
-                <div class="bg-body-tertiary border rounded-3">
+                <div class="bg-body-tertiary border rounded-3 card">
+                    <div class="card-header">
+                        <h2>Store Name</h2>
+                    </div>
                     <table class="table table-hover table-striped table-dark">
                         <thead>
                             <th>Item Code</th>
