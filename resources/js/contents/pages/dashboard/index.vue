@@ -13,12 +13,14 @@
                 <div class="card">
                     <div class="card-header">
                         <form class="w-100 me-3" role="search">
-                            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+                            <input type="search" class="form-control" placeholder="Search..." aria-label="Search"
+                                v-model="searchThis"
+                                @keyup="search()">
                         </form>
                     </div>
                         <div class="card-body ">
                             <h2 class="card-title text-end">Stores</h2>
-                            <p class="card-text text-end">10/62</p>
+                            <p class="card-text text-end">{{ store_lists.per_page+'/'+store_lists.total }}</p>
                         </div>
                 </div>
             </div>
@@ -30,7 +32,7 @@
                     <table class="table table-hover table-striped table-dark">
                         <thead>
                             <tr>
-                            <th scope="col">WarehouseCode</th>
+                            <th scope="col">Warehouse Code</th>
                             <th scope="col">Store</th>
                             <th scope="col">IP</th>
                             <th scope="col">Network Status</th>
@@ -38,10 +40,28 @@
                             </tr>
                         </thead>
                         <tbody id="storeAvailabilityTBL">
-                            <tr v-for="store, index in store_lists" :key="index">
-                                <th scope="row">{{ store.warehouse_code }}</th>
-                                <td>{{ store.store_name }}</td>
-                                <td>{{ store.store_ip}}</td>
+                            <tr v-for="store, index in store_lists.data" :key="index">
+                                
+                                
+                                <td >
+                                    <router-link class="text-decoration-none text-white" :class="getCursor(index)" 
+                                        :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''">
+                                        <p >{{ store.warehouse_code }}</p>
+                                    </router-link>
+                                </td>
+                                <td>
+                                    <router-link class="text-decoration-none text-white" :class="getCursor(index)"
+                                        :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''">
+                                        <p >{{ store.store_name }}</p>
+                                    </router-link>
+                                </td>
+                                <td>
+                                    <router-link class="text-decoration-none text-white" :class="getCursor(index)"
+                                        :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''">
+                                        <p>{{ store.store_ip }}</p>
+                                    </router-link>
+                                </td>
+
                                 <td v-html="storeAvailability(index)"></td>
                                 <td>
                                     <button @click="pingStoreIP(index, store.store_ip)" class="btn btn-primary"><i class="fas fa-redo"></i></button>
@@ -52,18 +72,27 @@
 
                     <!-- 
                     |==========================================================================
-                    | Pagination
+                    | Pagination loader.pagination=true;
                     |==========================================================================
                     -->           
                     <div class="d-flex justify-content-center mb-2">
                         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                            <button type="button" class="btn btn-secondary">Previous</button>
+                            <button type="button" class="btn btn-secondary"
+                                @click="getStoreList(store_lists.prev_page_url);" 
+                                :disabled="store_lists.prev_page_url===null">Previous
+                            </button>
                             <div class="btn-group" role="group">
-                                <select class="">
-                                    <option>Default select</option>
+                                <select class="px-2">
+                                    <option v-for="(pageNumber, pi) in store_lists.last_page" 
+                                        :key="pi"
+                                        :selected="pageNumber == store_lists.current_page">{{pageNumber}}
+                                    </option>
                                 </select>
                             </div>
-                            <button type="button" class="btn btn-secondary">Next</button>
+                            <button type="button" class="btn btn-secondary"
+                                @click="getStoreList(store_lists.next_page_url);" 
+                                :disabled="store_lists.next_page_url===null">Next
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -80,13 +109,14 @@ export default{
     },
 
     async mounted(){
-        this.getStoreList();
+        this.getStoreList('/api/store-lists');
     },
 
     data(){
         return{
             store_lists: {},
             ping_store: '',
+            searchThis: '',
         }
     },
 
@@ -96,12 +126,14 @@ export default{
         | Display Store List
         |==========================================================================
         */
-        async getStoreList(){
-            await axios.get('/api/store-lists').then(response=>{
+        async getStoreList(URL){
+            await axios.post(URL,{
+                searchThis : this.searchThis,
+            }).then(response=>{
                 this.store_lists = response.data
 
-                for (let index = 0; index < this.store_lists.length; index++) {                    
-                    this.pingStoreIP(index, this.store_lists[index].store_ip);
+                for (let index = 0; index < this.store_lists.data.length; index++) {           
+                    this.pingStoreIP(index, this.store_lists.data[index].store_ip);
                 }
             });
         },
@@ -113,23 +145,50 @@ export default{
         |==========================================================================
         */
         pingStoreIP(Index, IPAddress){
-            console.log(1);
-            this.store_lists[Index].store_availability = 3;
+            this.store_lists.data[Index].store_availability = 3;
             axios.post('/api/store-availability',{ip: IPAddress}).then(response=>{
                 if(response.data){
-                    this.store_lists[Index].store_availability = 1;
+                    this.store_lists.data[Index].store_availability = 1;
                 }else{
-                    this.store_lists[Index].store_availability = 0;
+                    this.store_lists.data[Index].store_availability = 0;
                 }
             })
+        },
+ 
 
-        }
+        /*
+        |==========================================================================
+        | Ping Store IP Address
+        |==========================================================================
+        */
+        getRouterLink(LinkName, Params){
+            return {name: LinkName, params: Params}
+        },  
+
+        /*
+        |==========================================================================
+        | Search
+        |==========================================================================
+        */
+        search(){
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.getStoreList('/api/store-lists')        
+            }, 300);
+        },
     },
 
     computed: {
+        getCursor(){
+            return (index) =>{
+                var store_availability = this.store_lists.data[index].store_availability;
+                return store_availability == "1"? '' : 'not-allowed';
+            }
+        },
+
         storeAvailability(){
             var value = (index) => {
-                var store_availability = this.store_lists[index].store_availability;
+                var store_availability = this.store_lists.data[index].store_availability;
                 if(store_availability == 3){
                     return '<button type="button" class="btn btn-secondary">Pinging...</button>';
                 }else if(store_availability == 1){
@@ -137,7 +196,6 @@ export default{
                 } else {
                     return '<button type="button" class="btn btn-danger">Offline</button>';
                 }
-                // return store_availability == 1? '<button type="button" class="btn btn-success">Online</button>' : '<button type="button" class="btn btn-danger">Offline</button>';
             }
 
             return value;

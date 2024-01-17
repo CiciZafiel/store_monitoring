@@ -15,9 +15,9 @@ class DashboardController extends Controller
 
 
 
-    public function getStoreList()
-    {
-        $stores = DB::connection('serverDB')
+    public function getStoreList(Request $request)
+    {  
+        $query = DB::connection('serverDB')
         ->table('tbl_store')
         ->selectRaw("
             warehouse_code,
@@ -25,11 +25,21 @@ class DashboardController extends Controller
             store_ip,
             '3' as store_availability
         ")
-        ->where('store_status','Active')
-        ->take(10)
-        ->get();
+        ->where('store_status','Active');
+        
+        if($request['searchThis'] != null){         
+            
+            $query->where(function($qry) use($request){
+                $qry->orWhere('warehouse_code','like', '%' .$request['searchThis']. '%')
+                    ->orWhere('store_name', 'like', '%'.$request['searchThis'].'%')
+                    ->orWhere('store_ip', 'like', '%'.$request['searchThis'].'%');
+            });
+        }
 
-        return response()->json($stores);
+        $results = $query->paginate(10);
+
+
+        return response()->json($results);
     }
 
     public function pingIpAddress(Request $request) 

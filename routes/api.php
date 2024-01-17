@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::controller(App\Http\Controllers\Dashboard\DashboardController::class)->group(function() {
-    Route::get('/store-lists', 'getStoreList');
+    Route::post('/store-lists', 'getStoreList');
     Route::post('/store-availability', 'pingIpAddress');
 });
 // Route::controllers(App\Http\Controllers\Store\StoreController::class)->group(function() {
