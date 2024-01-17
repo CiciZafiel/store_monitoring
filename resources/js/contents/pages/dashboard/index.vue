@@ -1,13 +1,32 @@
 <template>
     <div>
-        <div class="container-fluid pb-3">
-            <div class="d-grid gap-3" style="grid-template-columns: 1fr;">
-                <div class="bg-body-tertiary border rounded-3">
-                    <form class="w-100 me-3" role="search">
-                        <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
-                    </form>
-                    <br>
-                    <p class="text-black-50 bg-white">Test</p>
+        <div class="container-fluid pb-2">
+            <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Unposted count today</h2>
+                    </div>
+                        <div class="card-body">
+                            <h2 class="card-title text-center">23</h2>
+                        </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <form class="w-100 me-3" role="search">
+                            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+                        </form>
+                    </div>
+                        <div class="card-body ">
+                            <h2 class="card-title text-end">Stores</h2>
+                            <p class="card-text text-end">10/62</p>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="b-example-divider"></div>
+
+        <div class="bg-body-tertiary border rounded-3">  
                     <table class="table table-hover table-striped table-dark">
                         <thead>
                             <tr>
@@ -48,26 +67,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="b-example-divider"></div>
-
-        <!-- <nav class="py-2 bg-body-tertiary border-bottom">
-            <div class="container d-flex flex-wrap">
-            <ul class="nav me-auto">
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2 active" aria-current="page">Home</a></li>
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Features</a></li>
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Pricing</a></li>
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">FAQs</a></li>
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">About</a></li>
-            </ul>
-            <ul class="nav">
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Login</a></li>
-                <li class="nav-item"><a href="#" class="nav-link link-body-emphasis px-2">Sign up</a></li>
-            </ul>
-            </div>
-        </nav>  -->
     </div>
 </template>
 
