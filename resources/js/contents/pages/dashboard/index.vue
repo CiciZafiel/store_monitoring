@@ -20,7 +20,7 @@
                     </div>
                         <div class="card-body ">
                             <h2 class="card-title text-end">Stores</h2>
-                            <p class="card-text text-end">{{ store_lists.per_page+'/'+store_lists.total }}</p>
+                            <p class="card-text text-end">{{ 'Showing '+ store_lists.from +' to '+ store_lists.to +' of '+store_lists.total +' records.' }}</p>
                         </div>
                 </div>
             </div>
@@ -131,7 +131,7 @@ export default{
                 searchThis : this.searchThis,
             }).then(response=>{
                 this.store_lists = response.data
-
+                
                 for (let index = 0; index < this.store_lists.data.length; index++) {           
                     this.pingStoreIP(index, this.store_lists.data[index].store_ip);
                 }
