@@ -60,4 +60,52 @@ class DashboardController extends Controller
             return response()->json(false);
         }
     }
+
+    public function totalUnpostedToSAP(Request $request)
+    {
+        $results = DB::connection('serverDB')
+        ->table('tbl_SalesHeader')
+        ->select('SapDocumentNumber')
+        ->whereNull('SapDocumentNumber')
+        ->get()
+        ->count();
+        
+        return response()->json($results);
+    }
+
+    public function gettotalPostedToSAPToday(Request $request)
+    {
+        $results = DB::connection('serverDB')
+        ->table('tbl_SalesHeader')
+        ->select('SapDocumentNumber')
+        ->whereNotNull('SapDocumentNumber')
+        ->whereRaw('CreationDate = GETDATE()')
+        ->get()
+        ->count();
+        
+        return response()->json($results);
+    }
+    public function gettotalPostedToServerToday(Request $request)
+    {
+        $results = DB::connection('serverDB')
+        ->table('tbl_SalesHeader')
+        ->select('SapDocumentNumber')
+        ->whereRaw('CreationDate = GETDATE()')
+        ->get()
+        ->count();
+        
+        return response()->json($results);
+    }
+    public function gettotalUnpostedToSAPToday(Request $request)
+    {
+        $results = DB::connection('serverDB')
+        ->table('tbl_SalesHeader')
+        ->select('SapDocumentNumber')
+        ->whereNull('SapDocumentNumber')
+        ->whereRaw('CreationDate = GETDATE()')
+        ->get()
+        ->count();
+        
+        return response()->json($results);
+    }
 }

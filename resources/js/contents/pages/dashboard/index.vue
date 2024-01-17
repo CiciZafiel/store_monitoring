@@ -1,13 +1,37 @@
 <template>
     <div>
         <div class="container-fluid pb-2">
-            <div class="d-grid gap-3" style="grid-template-columns: 1fr 2fr;">
+            <div class="d-grid gap-3" style="grid-template-columns: 1fr 1fr 1fr 1fr 2fr;">
                 <div class="card">
                     <div class="card-header">
-                        <h2>Unposted count today</h2>
+                        <h3>Total Unposted to SAP</h3>
                     </div>
                         <div class="card-body">
-                            <h2 class="card-title text-center">23</h2>
+                            <h2 class="card-title text-center">{{totalUnpostedSAP}}</h2>
+                        </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>SAP Posted Today</h3>
+                    </div>
+                        <div class="card-body">
+                            <h2 class="card-title text-center">{{ totalPostedSAP }}</h2>
+                        </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Server Posted Today</h3>
+                    </div>
+                        <div class="card-body">
+                            <h2 class="card-title text-center">{{totalPostedServer}}</h2>
+                        </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>SAP Unposted Today</h3>
+                    </div>
+                        <div class="card-body">
+                            <h2 class="card-title text-center">{{totalUnpostedSAPToday}}</h2>
                         </div>
                 </div>
                 <div class="card">
@@ -110,6 +134,10 @@ export default{
 
     async mounted(){
         this.getStoreList('/api/store-lists');
+        this.totalUnpostedToSap('/api/total-unposted-to-sap');
+        this.totalPostedToSAP('/api/total-posted-to-server');
+        this.totalPostedToServer('/api/total-posted-to-server');
+        this.totalUnpostedToSAPToday('/api/total-unposted-to-sap-today');
     },
 
     data(){
@@ -117,6 +145,10 @@ export default{
             store_lists: {},
             ping_store: '',
             searchThis: '',
+            totalUnpostedSAP: '',
+            totalPostedSAP: '',
+            totalPostedServer: '',
+            totalUnpostedSAPToday: '',
         }
     },
 
@@ -175,6 +207,27 @@ export default{
             this.timer = setTimeout(() => {
                 this.getStoreList('/api/store-lists')        
             }, 300);
+        },
+        totalUnpostedToSap(URL){
+            axios.get(URL).then(response=>{
+               this.totalUnpostedSAP = response.data
+            })
+        },
+        totalPostedToSAP(URL){
+            axios.get(URL).then(response=>{
+               this.totalPostedSAP = response.data
+            })
+        },
+        totalPostedToServer(URL){
+            axios.get(URL).then(response=>{
+               this.totalPostedServer = response.data
+                
+            })
+        },
+        totalUnpostedToSAPToday(URL){
+            axios.get(URL).then(response=>{
+               this.totalUnpostedSAPToday = response.data
+            })
         },
     },
 

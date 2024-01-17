@@ -20,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::controller(App\Http\Controllers\Dashboard\DashboardController::class)->group(function() {
+    Route::get('/total-unposted-to-sap','totalUnpostedToSAP');
+    Route::get('/total-posted-to-sap','gettotalPostedToSAPToday');
+    Route::get('/total-posted-to-server','gettotalPostedToServerToday');
+    Route::get('/total-unposted-to-sap-today','gettotalUnpostedToSAPToday');
     Route::post('/store-lists', 'getStoreList');
     Route::post('/store-availability', 'pingIpAddress');
 });
