@@ -23,7 +23,7 @@ class DashboardController extends Controller
             warehouse_code,
             store_name,
             store_ip,
-            '0' as store_availability
+            '3' as store_availability
         ")
         ->where('store_status','Active')
         ->take(10)

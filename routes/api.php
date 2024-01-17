@@ -23,4 +23,7 @@ Route::controller(App\Http\Controllers\Dashboard\DashboardController::class)->gr
     Route::get('/store-lists', 'getStoreList');
     Route::post('/store-availability', 'pingIpAddress');
 });
+// Route::controllers(App\Http\Controllers\Store\StoreController::class)->group(function() {
+//     Route::get(/)
+// });
 

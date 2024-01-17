@@ -3,6 +3,11 @@
         <div class="container-fluid pb-3">
             <div class="d-grid gap-3" style="grid-template-columns: 1fr;">
                 <div class="bg-body-tertiary border rounded-3">
+                    <form class="w-100 me-3" role="search">
+                        <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+                    </form>
+                    <br>
+                    <p class="text-black-50 bg-white">Test</p>
                     <table class="table table-hover table-striped table-dark">
                         <thead>
                             <tr>
@@ -110,6 +115,7 @@ export default{
         */
         pingStoreIP(Index, IPAddress){
             console.log(1);
+            this.store_lists[Index].store_availability = 3;
             axios.post('/api/store-availability',{ip: IPAddress}).then(response=>{
                 if(response.data){
                     this.store_lists[Index].store_availability = 1;
@@ -125,8 +131,14 @@ export default{
         storeAvailability(){
             var value = (index) => {
                 var store_availability = this.store_lists[index].store_availability;
-
-                return store_availability == 1? '<button type="button" class="btn btn-success">Online</button>' : '<button type="button" class="btn btn-danger">Offline</button>';
+                if(store_availability == 3){
+                    return '<button type="button" class="btn btn-secondary">Pinging...</button>';
+                }else if(store_availability == 1){
+                    return '<button type="button" class="btn btn-success">Online</button>';
+                } else {
+                    return '<button type="button" class="btn btn-danger">Offline</button>';
+                }
+                // return store_availability == 1? '<button type="button" class="btn btn-success">Online</button>' : '<button type="button" class="btn btn-danger">Offline</button>';
             }
 
             return value;

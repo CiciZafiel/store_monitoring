@@ -13,6 +13,12 @@ const routes = [
                 meta: {},
                 component: () => import('../contents/pages/dashboard/index.vue'),
             },
+            {
+                path: '/store',
+                name: 'store',
+                meta: {},
+                component: () => import('../contents/pages/store/index.vue'),
+            },
         ],
     }
 ];
