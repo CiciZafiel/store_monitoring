@@ -19,6 +19,12 @@ class DashboardController extends Controller
     {
         $stores = DB::connection('serverDB')
         ->table('tbl_store')
+        ->selectRaw("
+            warehouse_code,
+            store_name,
+            store_ip,
+            '0' as store_availability
+        ")
         ->where('store_status','Active')
         ->take(10)
         ->get();
@@ -35,14 +41,13 @@ class DashboardController extends Controller
         // Run the ping command
         $command = escapeshellcmd("$pingCommand $ipAddress");
         exec($command, $output, $result);
-
         // Check the result (0 = successful)
         if ($result === 0) {
             // return "Ping to $ipAddress was successful.";
-            return true;
+            return response()->json(true);
         } else {
             // return "Ping to $ipAddress failed.";
-            return false;
+            return response()->json(false);
         }
     }
 }

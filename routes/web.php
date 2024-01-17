@@ -17,8 +17,12 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
+Route::get('/{any}', function () {
+    return view('index');
+})->where('any','.*');
 
-Route::controller(App\Http\Controllers\Dashboard\DashboardController::class)->group(function(){
-    Route::get('/Dashboard', 'index');
-    Route::get('/Ping', 'pingIpAddress');
-});
+
+// Route::controller(App\Http\Controllers\Dashboard\DashboardController::class)->group(function(){
+//     Route::get('/Dashboard', 'index');
+//     Route::get('/Ping', 'pingIpAddress');
+// });
