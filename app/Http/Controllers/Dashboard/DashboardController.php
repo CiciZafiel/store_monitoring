@@ -89,7 +89,7 @@ class DashboardController extends Controller
     {
         $results = DB::connection('serverDB')
         ->table('tbl_SalesHeader')
-        ->select('SapDocumentNumber')
+        ->selectRaw('*')
         ->whereRaw('CreationDate = GETDATE()')
         ->get()
         ->count();

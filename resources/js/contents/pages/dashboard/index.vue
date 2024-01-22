@@ -135,7 +135,7 @@ export default{
     async mounted(){
         this.getStoreList('/api/store-lists');
         this.totalUnpostedToSap('/api/total-unposted-to-sap');
-        this.totalPostedToSAP('/api/total-posted-to-server');
+        this.totalPostedToSAP('/api/total-posted-to-sap');
         this.totalPostedToServer('/api/total-posted-to-server');
         this.totalUnpostedToSAPToday('/api/total-unposted-to-sap-today');
     },
