@@ -3,15 +3,20 @@ import './bootstrap';
 // window.$ = jQuery;
 
 import {createApp} from 'vue';
-// Content
-import application from './app.vue';
-
 // Router
 import router from './routes/router.js';
 
+// Content
+import application from './app.vue';
+
+// Component
+import content_loader from './contents/components/content_loader.vue';
+
+
+
 const app = createApp(application);
-console.log('test');
-app.use(router);
-app.mount('#app');
+app.use(router)
+    .component('content_loader', content_loader)
+    .mount('#app');
 
  

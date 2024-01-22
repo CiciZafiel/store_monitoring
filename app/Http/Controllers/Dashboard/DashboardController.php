@@ -5,15 +5,12 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+use App\Models\StoreMonitoring\PingLogs;
 
 class DashboardController extends Controller
 {
-
-    public function index(){
-        return view('dashboard.index');
-    }
-
-
 
     public function getStoreList(Request $request)
     {  
@@ -42,6 +39,8 @@ class DashboardController extends Controller
         return response()->json($results);
     }
 
+
+
     public function pingIpAddress(Request $request) 
     { 
         // Define the ping command based on the operating system
@@ -51,15 +50,31 @@ class DashboardController extends Controller
         // Run the ping command
         $command = escapeshellcmd("$pingCommand $ipAddress");
         exec($command, $output, $result);
+
         // Check the result (0 = successful)
         if ($result === 0) {
-            // return "Ping to $ipAddress was successful.";
+            $this->pingIpAddressLogs($request['warehouse_code'], 'Online');
+
             return response()->json(true);
         } else {
-            // return "Ping to $ipAddress failed.";
+            $this->pingIpAddressLogs($request['warehouse_code'], 'Offline');
+
             return response()->json(false);
         }
     }
+
+    public function pingIpAddressLogs($warehouse_code, $ping_status)
+    {   
+        $current_date = new Carbon();
+
+        $result = PingLogs::insert([
+            'Store' => $warehouse_code,
+            'Description' => $ping_status,
+            'CreationDate' => $current_date
+        ]);
+    }
+
+
 
     public function totalUnpostedToSAP(Request $request)
     {
@@ -73,6 +88,8 @@ class DashboardController extends Controller
         return response()->json($results);
     }
 
+
+
     public function gettotalPostedToSAPToday(Request $request)
     {
         $results = DB::connection('serverDB')
@@ -85,6 +102,9 @@ class DashboardController extends Controller
         
         return response()->json($results);
     }
+
+
+
     public function gettotalPostedToServerToday(Request $request)
     {
         $results = DB::connection('serverDB')
@@ -96,6 +116,9 @@ class DashboardController extends Controller
         
         return response()->json($results);
     }
+
+
+
     public function gettotalUnpostedToSAPToday(Request $request)
     {
         $results = DB::connection('serverDB')

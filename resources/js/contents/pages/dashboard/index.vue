@@ -88,7 +88,7 @@
 
                                 <td v-html="storeAvailability(index)"></td>
                                 <td>
-                                    <button @click="pingStoreIP(index, store.store_ip)" class="btn btn-primary"><i class="fas fa-redo"></i></button>
+                                    <button @click="pingStoreIP(index, store.warehouse_code, store.store_ip)" class="btn btn-primary"><i class="fas fa-redo"></i></button>
                                 </td>
                             </tr>
                         </tbody>
@@ -96,7 +96,7 @@
 
                     <!-- 
                     |==========================================================================
-                    | Pagination loader.pagination=true;
+                    | Pagination 
                     |==========================================================================
                     -->           
                     <div class="d-flex justify-content-center mb-2">
@@ -135,7 +135,7 @@ export default{
     async mounted(){
         this.getStoreList('/api/store-lists');
         this.totalUnpostedToSap('/api/total-unposted-to-sap');
-        this.totalPostedToSAP('/api/total-posted-to-server');
+        this.totalPostedToSAP('/api/total-posted-to-sap');
         this.totalPostedToServer('/api/total-posted-to-server');
         this.totalUnpostedToSAPToday('/api/total-unposted-to-sap-today');
     },
@@ -165,7 +165,7 @@ export default{
                 this.store_lists = response.data
                 
                 for (let index = 0; index < this.store_lists.data.length; index++) {           
-                    this.pingStoreIP(index, this.store_lists.data[index].store_ip);
+                    this.pingStoreIP(index, this.store_lists.data[index].warehouse_code, this.store_lists.data[index].store_ip);
                 }
             });
         },
@@ -176,9 +176,12 @@ export default{
         | Ping Store IP Address
         |==========================================================================
         */
-        pingStoreIP(Index, IPAddress){
+        pingStoreIP(Index, WarehouseCode, IPAddress){
             this.store_lists.data[Index].store_availability = 3;
-            axios.post('/api/store-availability',{ip: IPAddress}).then(response=>{
+            axios.post('/api/store-availability',{
+                warehouse_code: WarehouseCode,
+                ip: IPAddress
+            }).then(response=>{
                 if(response.data){
                     this.store_lists.data[Index].store_availability = 1;
                 }else{

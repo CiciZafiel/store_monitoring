@@ -14,7 +14,7 @@ const routes = [
                 component: () => import('../contents/pages/dashboard/index.vue'),
             },
             {
-                path: '/store',
+                path: '/store/:warehouse_code',
                 name: 'store',
                 meta: {},
                 component: () => import('../contents/pages/store/index.vue'),
