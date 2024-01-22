@@ -19,6 +19,12 @@ const routes = [
                 meta: {},
                 component: () => import('../contents/pages/store/index.vue'),
             },
+            {
+                path: '/sales',
+                name: 'sales',
+                meta: {},
+                component: () => import('../contents/pages/sales/index.vue'),
+            },
         ],
     }
 ];
