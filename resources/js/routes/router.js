@@ -25,8 +25,20 @@ const routes = [
                 meta: {},
                 component: () => import('../contents/pages/sales/index.vue'),
             },
+            {
+                path: '/inventory',
+                name: 'inventory',
+                meta: {},
+                component: () => import('../contents/pages/inventory/index.vue')
+            },
         ],
-    }
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'notfound',
+        meta: { },
+        component: () => import('../contents/pages/errors/404.vue')
+    },
 ];
 
 const router = createRouter({

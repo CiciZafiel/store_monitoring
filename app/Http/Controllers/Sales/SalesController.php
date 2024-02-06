@@ -4,84 +4,85 @@ namespace App\Http\Controllers\Sales;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SalesController extends Controller
 {
     
-    public function index(){
-        return view('sales.index');
-    }
-
-    public function totalUnpostedToSAP(Request $request)
-    {
-        $results = DB::connection('serverDB')
-        ->table('tbl_SalesHeader')
-        ->select('SapDocumentNumber')
-        ->whereNull('SapDocumentNumber')
-        ->get()
-        ->count();
-        
-        return response()->json($results);
-    }
-
-    public function gettotalPostedToSAPToday(Request $request)
-    {
-        $results = DB::connection('serverDB')
-        ->table('tbl_SalesHeader')
-        ->select('SapDocumentNumber')
-        ->whereNotNull('SapDocumentNumber')
-        ->whereRaw('CreationDate = GETDATE()')
-        ->get()
-        ->count();
-        
-        return response()->json($results);
-    }
-    public function gettotalPostedToServerToday(Request $request)
-    {
-        $results = DB::connection('serverDB')
-        ->table('tbl_SalesHeader')
-        ->selectRaw('*')
-        ->whereRaw('CreationDate = GETDATE()')
-        ->get()
-        ->count();
-        
-        return response()->json($results);
-    }
-    public function gettotalUnpostedToSAPToday(Request $request)
-    {
-        $results = DB::connection('serverDB')
-        ->table('tbl_SalesHeader')
-        ->select('SapDocumentNumber')
-        ->whereNull('SapDocumentNumber')
-        ->whereRaw('CreationDate = GETDATE()')
-        ->get()
-        ->count();
-        
-        return response()->json($results);
-    }
-    public function getSalesData(Request $request, Filter $filter)
-    {
-        $results = DB::connection('serverDB')
+    
+    public function getSalesData(Request $request)
+    {   
+        $query = DB::connection('serverDB')
         ->table('tbl_SalesHeader')
         ->select(
             'ID',
-            'CreatationDate',
+            DB::raw("FORMAT (CreationDate, 'MM-dd-yyyy ') as CreationDate"),
             'CardName',
             'WarehouseCode',
             'Comments',
+            'CustomerReferenceNumber',
             'SapDocumentNumber',
-            'SapIncomingDocumentNumber')
-        if($filter == ""){
-            ->whereRaw('CreatationDate = GETDATE()')
-        }elseif ($filter == "PostedSAPToday"){
-            ->whereRaw('SapDocumentNumber IS NOT NULL AND CreatationDate = GETDATE()')
-        }elseif ($filter == "PostedServerToday"){
-            ->whereRaw('CreatationDate = GETDATE()')
-        }elseif ($filter == "UnpostedSAPToday"){
-            ->whereRaw('SapDocumentNumber IS NULL AND CreatationDate = GETDATE()')
-        }
-        ->get();
+            'SapIncomingDocumentNumber'
+        );
 
+        
+
+        switch ($request['type']) {
+            case 'sap_unposted':
+                $query->whereNull('SapDocumentNumber');
+
+                break;
+            case 'sap_posted_today':
+                $query->whereNotNull('SapDocumentNumber')
+                ->whereRaw('CreationDate = GETDATE()');
+
+                break;
+            case 'server_unposted_today':
+                $query->whereRaw('CreationDate = GETDATE()');
+
+                break;
+            case 'sap_unposted_today':
+                $query->whereNull('SapDocumentNumber')
+                ->whereRaw('CreationDate = GETDATE()');
+
+                break;            
+            default:
+                break;
+        }
+
+        if($request['searchThis'] != null){         
+            
+            $query->where(function($qry) use($request){
+                $qry->orWhere('ID','like', '%' .$request['searchThis']. '%')
+                    ->orWhere('CardName', 'like', '%'.$request['searchThis'].'%')
+                    ->orWhere('WarehouseCode', 'like', '%'.$request['searchThis'].'%')
+                    ->orWhere('CustomerReferenceNumber', 'like', '%'.$request['searchThis'].'%')
+                    ->orWhere('SapDocumentNumber', 'like', '%'.$request['searchThis'].'%')
+                    ->orWhere('SapIncomingDocumentNumber', 'like', '%'.$request['searchThis'].'%');
+            });
+        }
+
+        $results = $query->orderBy('CreationDate', 'DESC')
+        ->paginate(10);
+       
         return response()->json($results);
     }
+
+    public function getSalesPostedAndUnpostedSummary()
+    { 
+        $results = DB::connection('serverDB')
+        ->table('tbl_SalesHeader')
+        ->selectRaw("
+            max(WarehouseCode) WarehouseCode,
+            count(ID) TotalPosted, 	
+            SUM(CASE WHEN SapDocumentNumber is null THEN 1 ELSE 0 END) as TotalSapUnposted,
+            SUM(CASE WHEN SapDocumentNumber is not null THEN 1 ELSE 0 END) as TotalSapPosted
+        ")
+        ->whereBetween('CreationDate', ['2024-01-01','2024-01-15'])
+        ->groupBy('WarehouseCode')
+        ->get();
+
+
+        return response()->json($results);
+    }   
 }

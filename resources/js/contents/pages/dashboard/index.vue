@@ -52,74 +52,74 @@
 
         <div class="b-example-divider"></div>
 
-        <div class="bg-body-tertiary border rounded-3">  
-                    <table class="table table-hover table-striped table-dark">
-                        <thead>
-                            <tr>
-                            <th scope="col">Warehouse Code</th>
-                            <th scope="col">Store</th>
-                            <th scope="col">IP</th>
-                            <th scope="col">Network Status</th>
-                            <th scope="col">Ping</th>
-                            </tr>
-                        </thead>
-                        <tbody id="storeAvailabilityTBL">
-                            <tr v-for="store, index in store_lists.data" :key="index">
-                                
-                                
-                                <td >
-                                    <router-link class="text-decoration-none text-white" :class="getCursor(index)" 
-                                        :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''">
-                                        <p >{{ store.warehouse_code }}</p>
-                                    </router-link>
-                                </td>
-                                <td>
-                                    <router-link class="text-decoration-none text-white" :class="getCursor(index)"
-                                        :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''">
-                                        <p >{{ store.store_name }}</p>
-                                    </router-link>
-                                </td>
-                                <td>
-                                    <router-link class="text-decoration-none text-white" :class="getCursor(index)"
-                                        :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''">
-                                        <p>{{ store.store_ip }}</p>
-                                    </router-link>
-                                </td>
-
-                                <td v-html="storeAvailability(index)"></td>
-                                <td>
-                                    <button @click="pingStoreIP(index, store.warehouse_code, store.store_ip)" class="btn btn-primary"><i class="fas fa-redo"></i></button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <!-- 
-                    |==========================================================================
-                    | Pagination 
-                    |==========================================================================
-                    -->           
-                    <div class="d-flex justify-content-center mb-2">
-                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                            <button type="button" class="btn btn-secondary"
-                                @click="getStoreList(store_lists.prev_page_url);" 
-                                :disabled="store_lists.prev_page_url===null">Previous
-                            </button>
-                            <div class="btn-group" role="group">
-                                <select class="px-2">
-                                    <option v-for="(pageNumber, pi) in store_lists.last_page" 
-                                        :key="pi"
-                                        :selected="pageNumber == store_lists.current_page">{{pageNumber}}
-                                    </option>
-                                </select>
-                            </div>
-                            <button type="button" class="btn btn-secondary"
-                                @click="getStoreList(store_lists.next_page_url);" 
-                                :disabled="store_lists.next_page_url===null">Next
-                            </button>
+        <div class="card ">  
+            <div class="card-body">
+                <table class="table table-hover table-striped table-dark">
+                    <thead>
+                        <tr>
+                        <th scope="col">Warehouse Code</th>
+                        <th scope="col">Store</th>
+                        <th scope="col">IP</th>
+                        <th scope="col">Network Status</th>
+                        <th scope="col">Ping</th>
+                        </tr>
+                    </thead>
+                    <tbody id="storeAvailabilityTBL">
+                        <tr v-for="store, index in store_lists.data" :key="index">
+                
+                
+                            <td >
+                                <router-link class="text-decoration-none text-white" :class="getCursor(index)"
+                                    :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''">
+                                    <p >{{ store.warehouse_code }}</p>
+                                </router-link>
+                            </td>
+                            <td>
+                                <router-link class="text-decoration-none text-white" :class="getCursor(index)"
+                                    :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''">
+                                    <p >{{ store.store_name }}</p>
+                                </router-link>
+                            </td>
+                            <td>
+                                <router-link class="text-decoration-none text-white" :class="getCursor(index)"
+                                    :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''">
+                                    <p>{{ store.store_ip }}</p>
+                                </router-link>
+                            </td>
+                            <td v-html="storeAvailability(index)"></td>
+                            <td>
+                                <button @click="pingStoreIP(index, store.warehouse_code, store.store_ip)" class="btn btn-primary"><i class="fas fa-redo"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!--
+                |==========================================================================
+                | Pagination
+                |==========================================================================
+                -->
+                <div class="d-flex justify-content-center mb-2">
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <button type="button" class="btn btn-secondary"
+                            @click="getStoreList(store_lists.prev_page_url);"
+                            :disabled="store_lists.prev_page_url===null">Previous
+                        </button>
+                        <div class="btn-group" role="group">
+                            <select  @change="jumPage($event)" class="px-2">
+                                <option v-for="(pageNumber, pi) in store_lists.last_page"
+                                    :key="pi"
+                                    :selected="pageNumber == store_lists.current_page">{{pageNumber}}
+                                </option>
+                            </select>
                         </div>
+                        <button type="button" class="btn btn-secondary"
+                            @click="getStoreList(store_lists.next_page_url);"
+                            :disabled="store_lists.next_page_url===null">Next
+                        </button>
                     </div>
                 </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -200,6 +200,7 @@ export default{
             return {name: LinkName, params: Params}
         },  
 
+
         /*
         |==========================================================================
         | Search
@@ -211,6 +212,18 @@ export default{
                 this.getStoreList('/api/store-lists')        
             }, 300);
         },
+        
+
+        /*
+        |==========================================================================
+        | Jump Pagination   
+        |==========================================================================
+        */
+        jumPage(_value){      
+            var url = '/api/store-lists' + `?page=${_value.target.value}`;
+            this.getStoreList(url);
+        },
+
         totalUnpostedToSap(URL){
             axios.get(URL).then(response=>{
                this.totalUnpostedSAP = response.data

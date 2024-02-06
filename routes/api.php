@@ -32,5 +32,22 @@ Route::controller(App\Http\Controllers\Dashboard\DashboardController::class)->gr
 Route::controller(App\Http\Controllers\Store\StoreController::class)->group(function() {
     Route::post('/imei-lists', 'getIMEIList');
     Route::post('/search-imei', 'searchIMEI');
+    Route::post('/store/ping-store', 'pingStore');
+    Route::post('/store/check-serial', 'checkSerialStatusPerItem');
+    Route::post('/store/serial-transaction-history', 'serialTransactionHistory');
 });
 
+
+Route::controller(App\Http\Controllers\Sales\SalesController::class)->group(function() {
+    Route::post('/sales-details', 'getSalesData');
+    Route::post('/sales-posted-and-unposted-summary', 'getSalesPostedAndUnpostedSummary');
+});
+
+
+Route::controller(App\Http\Controllers\Inventory\InventoryController::class)->group(function(){
+    Route::get('/invetory/store-lists', 'getStoreList');
+    Route::post('/inventory/items', 'getItems');
+    Route::post('/inventory/store-item-qty', 'getStoresItemQty');
+    Route::post('/inventory/ping-store', 'pingStore');
+   
+});

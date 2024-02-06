@@ -5,7 +5,7 @@
         <a href="#" class="d-flex align-items-center col-lg-4 mb-2 mb-lg-0 link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
           <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
         </a>
-        <ul class="dropdown-menu text-small shadow">
+        {{-- <ul class="dropdown-menu text-small shadow"> --}}
           {{-- <li><a class="dropdown-item active" href="#" aria-current="page">Overview</a></li>
           <li><a class="dropdown-item" href="#">Inventory</a></li>
           <li><a class="dropdown-item" href="#">Customers</a></li>
@@ -13,7 +13,7 @@
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item" href="#">Reports</a></li>
           <li><a class="dropdown-item" href="#">Analytics</a></li> --}}
-        </ul>
+        {{-- </ul> --}}
       </div>
 
       <div class="d-flex align-items-center">

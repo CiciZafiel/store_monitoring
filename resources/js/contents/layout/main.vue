@@ -14,6 +14,8 @@
 
     </div>
 
+    <footer style="height: 5em;"></footer>
+
 </div>
 </template>
 
