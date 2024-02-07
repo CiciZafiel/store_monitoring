@@ -4,9 +4,21 @@
         <div class="container-fluid pb-3">
 
             <div class="d-grid gap-3" style="grid-template-columns: 1fr;">
-                <h2>{{ imei_lists.data[0].store_name}}</h2>
+                <div class="row">
+                    <div class="col"><h2>{{ imei_lists.data[0].store_name}}</h2></div>
+                    <div class="col-3">
+                        <div class="card ">
+                            <div class="card-header border-bottom-0">
+                                <input type="search" class="form-control" placeholder="Search..." aria-label="Search"
+                                v-model="searchThis"
+                                @keyup="search()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
-
+                
+                
                 <div class="row">
                             <div class="col-5">
                                <div class="card">

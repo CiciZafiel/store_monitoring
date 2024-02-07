@@ -110,6 +110,8 @@
                                     <th scope="col">Total Posted</th>
                                     <th scope="col">Total Sap Posted</th>
                                     <th scope="col">Total Sap Unposted</th>
+                                    <!-- <th scope="col">Serialized Item Qty</th>
+                                    <th scope="col">Non-Serialized Item Qty</th> -->
                                     <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
@@ -117,12 +119,12 @@
                                     <!-- No data -->
                                     <!-- && !loader.data -->
                                     <tr v-if="(salesPostedAndUnpostedSummary.total <= 0 && !tblLoader )">
-                                        <td class="align-middle text-center" colspan="5">
+                                        <td class="align-middle text-center" colspan="5 ">
                                             <span>No data available in table</span>
                                         </td>
                                     </tr>
                                     <tr v-if="tblLoader">
-                                        <td class="align-middle" colspan="5">
+                                        <td class="align-middle" colspan="5 ">
                                             <div class="d-flex justify-content-center" >
                                                 <div class="spinner-border" role="status">
                                                 </div>
@@ -137,6 +139,8 @@
                                         <td>{{ item.TotalPosted }}</td>
                                         <td>{{ item.TotalSapPosted  }}</td>
                                         <td>{{ item.TotalSapUnposted }}</td>
+                                        <!-- <td>{{ item.Serialized  }}</td>
+                                        <td>{{ item.NonSerialized }}</td> -->
                                         <td>
                                             <button type="button" class="btn btn-success" 
                                             @click="exportWarehouseCode=item.WarehouseCode;storeSalesExportExcel(this.url.storeSalesExportExcel)"><i class="fas fa-download"></i></button>

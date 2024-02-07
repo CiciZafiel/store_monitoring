@@ -69,22 +69,22 @@
                 
                 
                             <td >
-                                <router-link class="text-decoration-none text-white" :class="getCursor(index)"
-                                    :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''">
+                                <!-- <router-link class="text-decoration-none text-white" :class="getCursor(index)"
+                                    :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''"> -->
                                     <p >{{ store.warehouse_code }}</p>
-                                </router-link>
+                                <!-- </router-link> -->
                             </td>
                             <td>
-                                <router-link class="text-decoration-none text-white" :class="getCursor(index)"
-                                    :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''">
+                                <!-- <router-link class="text-decoration-none text-white" :class="getCursor(index)"
+                                    :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''"> -->
                                     <p >{{ store.store_name }}</p>
-                                </router-link>
+                                <!-- </router-link> -->
                             </td>
                             <td>
-                                <router-link class="text-decoration-none text-white" :class="getCursor(index)"
-                                    :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''">
+                                <!-- <router-link class="text-decoration-none text-white" :class="getCursor(index)"
+                                    :to="store.store_availability == '1'? getRouterLink('store', {warehouse_code: store.warehouse_code} ) : ''"> -->
                                     <p>{{ store.store_ip }}</p>
-                                </router-link>
+                                <!-- </router-link> -->
                             </td>
                             <td v-html="storeAvailability(index)"></td>
                             <td>
@@ -134,10 +134,14 @@ export default{
 
     async mounted(){
         this.getStoreList('/api/store-lists');
-        this.totalUnpostedToSap('/api/total-unposted-to-sap');
-        this.totalPostedToSAP('/api/total-posted-to-sap');
-        this.totalPostedToServer('/api/total-posted-to-server');
-        this.totalUnpostedToSAPToday('/api/total-unposted-to-sap-today');
+        
+
+        setInterval(() => {
+            this.totalUnpostedToSap('/api/total-unposted-to-sap');
+            this.totalPostedToSAP('/api/total-posted-to-sap');
+            this.totalPostedToServer('/api/total-posted-to-server');
+            this.totalUnpostedToSAPToday('/api/total-unposted-to-sap-today');
+        }, 60000);
     },
 
     data(){

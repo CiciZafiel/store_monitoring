@@ -200,9 +200,9 @@ class StoreController extends Controller
 
 
         $transaction_history = $sales
-        // ->unionAll($exchange)
-        // ->unionAll($stock_transfer_recieve)
-        // ->unionAll($stock_transfer_shipment)
+        ->unionAll($exchange)
+        ->unionAll($stock_transfer_recieve)
+        ->unionAll($stock_transfer_shipment)
         ->orderBy('CreationDate', 'DESC')
         ->get();
 

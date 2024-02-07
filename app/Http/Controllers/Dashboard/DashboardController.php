@@ -84,6 +84,8 @@ class DashboardController extends Controller
         ->whereNull('SapDocumentNumber')
         ->get()
         ->count();
+
+
         
         return response()->json($results);
     }
@@ -92,12 +94,20 @@ class DashboardController extends Controller
 
     public function gettotalPostedToSAPToday(Request $request)
     {
-        $results = DB::connection('serverDB')
+        $creation_date = DB::connection('serverDB')
         ->table('tbl_SalesHeader')
-        ->select('SapDocumentNumber')
         ->whereNotNull('SapDocumentNumber')
         ->whereRaw('CreationDate = Cast(GETDATE()-1 as Date)')
         ->count();
+
+        $posting_date = DB::connection('serverDB')
+        ->table('tbl_SalesHeader')
+        ->whereNotNull('SapDocumentNumber')
+        ->whereRaw('PostingDate = Cast(GETDATE()-1 as Date)')
+        ->count();       
+
+
+        $results = $creation_date + $posting_date;
      
         return response()->json($results);
     }
@@ -106,13 +116,21 @@ class DashboardController extends Controller
 
     public function gettotalPostedToServerToday(Request $request)
     {
-        $results = DB::connection('serverDB')
-        ->table('tbl_SalesHeader')
-        ->selectRaw('*')
-        ->whereRaw('CreationDate = Cast(GETDATE()-1 as Date)')
-        ->get()
-        ->count();
         
+
+        $creation_date = DB::connection('serverDB')
+        ->table('tbl_SalesHeader')
+        ->whereRaw('CreationDate = Cast(GETDATE()-1 as Date)')
+        ->count();
+
+        $posting_date = DB::connection('serverDB')
+        ->table('tbl_SalesHeader')
+        ->whereRaw('PostingDate = Cast(GETDATE()-1 as Date)')
+        ->count();       
+
+        
+        $results = $creation_date + $posting_date;
+
         return response()->json($results);
     }
 
@@ -120,13 +138,20 @@ class DashboardController extends Controller
 
     public function gettotalUnpostedToSAPToday(Request $request)
     {
-        $results = DB::connection('serverDB')
+        $creation_date = DB::connection('serverDB')
         ->table('tbl_SalesHeader')
-        ->select('SapDocumentNumber')
         ->whereNull('SapDocumentNumber')
         ->whereRaw('CreationDate = Cast(GETDATE()-1 as Date)')
-        ->get()
         ->count();
+
+        $posting_date = DB::connection('serverDB')
+        ->table('tbl_SalesHeader')
+        ->whereNull('SapDocumentNumber')
+        ->whereRaw('PostingDate = Cast(GETDATE()-1 as Date)')
+        ->count();       
+
+
+        $results = $creation_date + $posting_date;
         
         return response()->json($results);
     }

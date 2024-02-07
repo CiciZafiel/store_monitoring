@@ -72,30 +72,79 @@ class SalesController extends Controller
     }
 
     public function getSalesPostedAndUnpostedSummary(Request $request)
-    { 
-        $query = DB::connection('serverDB')
+    {
+        $query_creation_date = DB::connection('serverDB')
         ->table('tbl_SalesHeader')
         ->selectRaw("
             max(tbl_warehouse.WarehouseCode) WarehouseCode,
             max(tbl_warehouse.WarehouseName) as WarehouseName,
             count(ID) TotalPosted, 	
             SUM(CASE WHEN SapDocumentNumber is null THEN 1 ELSE 0 END) as TotalSapUnposted,
-            SUM(CASE WHEN SapDocumentNumber is not null THEN 1 ELSE 0 END) as TotalSapPosted
+            SUM(CASE WHEN SapDocumentNumber is not null THEN 1 ELSE 0 END) as TotalSapPosted,
+            (
+                select
+                    SUM(CASE WHEN Serialized = 'Y' THEN 1 ELSE 0 END) as Serialized
+                from tbl_SalesHeader 
+                inner join tbl_SalesDetails on tbl_SalesDetails.ID = tbl_SalesHeader.ID
+                where CreationDate Between '".$request['dateFrom']."' and '".$request['dateTo']."'  and tbl_SalesDetails.WhsCode =  max(tbl_warehouse.WarehouseCode)
+            ) as Serialized,
+            (
+                select
+                    SUM(CASE WHEN Serialized = 'N' THEN 1 ELSE 0 END) as NonSerialized
+                from tbl_SalesHeader 
+                inner join tbl_SalesDetails on tbl_SalesDetails.ID = tbl_SalesHeader.ID
+                where CreationDate Between '".$request['dateFrom']."' and '".$request['dateTo']."'  and tbl_SalesDetails.WhsCode =  max(tbl_warehouse.WarehouseCode)
+            ) as NonSerialized
         ")
         ->whereBetween('CreationDate', [$request['dateFrom'],$request['dateTo']])
         ->join('tbl_warehouse','tbl_warehouse.WarehouseCode', '=', 'tbl_SalesHeader.WarehouseCode')
         ->groupBy('tbl_warehouse.WarehouseCode');
 
-        if($request['searchThis'] != null){                   
-            $query->where(function($qry) use($request){
-                $qry->orWhere('tbl_warehouse.WarehouseCode', 'like', '%'.$request['searchThis'].'%')  
-                ->orWhere('tbl_warehouse.WarehouseName', 'like', '%'.$request['searchThis'].'%');               
-            });      
-        }
+        $query_posting_date = DB::connection('serverDB')
+        ->table('tbl_SalesHeader')
+        ->selectRaw("
+            max(tbl_warehouse.WarehouseCode) WarehouseCode,
+            max(tbl_warehouse.WarehouseName) as WarehouseName,
+            count(ID) TotalPosted, 	
+            SUM(CASE WHEN SapDocumentNumber is null THEN 1 ELSE 0 END) as TotalSapUnposted,
+            SUM(CASE WHEN SapDocumentNumber is not null THEN 1 ELSE 0 END) as TotalSapPosted,
+            (
+                select
+                    SUM(CASE WHEN Serialized = 'Y' THEN 1 ELSE 0 END) as Serialized
+                from tbl_SalesHeader 
+                inner join tbl_SalesDetails on tbl_SalesDetails.ID = tbl_SalesHeader.ID
+                where PostingDate Between '".$request['dateFrom']."' and '".$request['dateTo']."'  and tbl_SalesDetails.WhsCode =  max(tbl_warehouse.WarehouseCode)
+            ) as Serialized,
+            (
+                select
+                    SUM(CASE WHEN Serialized = 'N' THEN 1 ELSE 0 END) as NonSerialized
+                from tbl_SalesHeader 
+                inner join tbl_SalesDetails on tbl_SalesDetails.ID = tbl_SalesHeader.ID
+                where PostingDate Between '".$request['dateFrom']."' and '".$request['dateTo']."'  and tbl_SalesDetails.WhsCode =  max(tbl_warehouse.WarehouseCode)
+            ) as NonSerialized
+        ")
+        ->whereBetween('PostingDate', [$request['dateFrom'],$request['dateTo']])
+        ->join('tbl_warehouse','tbl_warehouse.WarehouseCode', '=', 'tbl_SalesHeader.WarehouseCode')
+        ->groupBy('tbl_warehouse.WarehouseCode');
 
-        $results = $query->paginate(10);
+
+ 
 
 
+        // if($request['searchThis'] != null){                   
+        //     $query->where(function($qry) use($request){
+        //         $qry->orWhere('tbl_warehouse.WarehouseCode', 'like', '%'.$request['searchThis'].'%')  
+        //         ->orWhere('tbl_warehouse.WarehouseName', 'like', '%'.$request['searchThis'].'%');               
+        //     });      
+        // }
+
+
+
+
+        $results = $query_creation_date
+        ->paginate(10);
+
+        
         return response()->json($results);
     }   
 
