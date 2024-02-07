@@ -29,6 +29,14 @@
                                             </select>
                                         </div>
                                     </div>
+
+                                    <div class="col-sm-3"></div>
+
+                                    <div class="form-group col-sm-3">
+                                            <input type="search" class="form-control" placeholder="Search..." aria-label="Search"
+                                                v-model="searchThis"
+                                                @keyup="search()">
+                                    </div>
                                 </div>
                         </div>
 
@@ -137,6 +145,7 @@ export default {
                 ping_store: '/api/inventory/ping-store',
             },
             tblLoader: false,
+            searchThis: '',
         }
     },
 
@@ -146,6 +155,7 @@ export default {
 
             axios.post(URL,{
                 filter : this.filter,
+                searchThis : this.searchThis,
             }).then(async (response)=>{
                 this.items = response.data;
 
@@ -206,6 +216,13 @@ export default {
         jumPage(_value){      
             var url = this.url.items + `?page=${_value.target.value}`;
             this.getItems(url);
+        },        
+
+        search(){
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.getItems(this.url.items)        
+            }, 300);
         },
     }
 }

@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use Excel;
+use App\Exports\SalesExport;
+
 class SalesController extends Controller
 {
     
@@ -68,21 +71,36 @@ class SalesController extends Controller
         return response()->json($results);
     }
 
-    public function getSalesPostedAndUnpostedSummary()
+    public function getSalesPostedAndUnpostedSummary(Request $request)
     { 
-        $results = DB::connection('serverDB')
+        $query = DB::connection('serverDB')
         ->table('tbl_SalesHeader')
         ->selectRaw("
-            max(WarehouseCode) WarehouseCode,
+            max(tbl_warehouse.WarehouseCode) WarehouseCode,
+            max(tbl_warehouse.WarehouseName) as WarehouseName,
             count(ID) TotalPosted, 	
             SUM(CASE WHEN SapDocumentNumber is null THEN 1 ELSE 0 END) as TotalSapUnposted,
             SUM(CASE WHEN SapDocumentNumber is not null THEN 1 ELSE 0 END) as TotalSapPosted
         ")
-        ->whereBetween('CreationDate', ['2024-01-01','2024-01-15'])
-        ->groupBy('WarehouseCode')
-        ->get();
+        ->whereBetween('CreationDate', [$request['dateFrom'],$request['dateTo']])
+        ->join('tbl_warehouse','tbl_warehouse.WarehouseCode', '=', 'tbl_SalesHeader.WarehouseCode')
+        ->groupBy('tbl_warehouse.WarehouseCode');
+
+        if($request['searchThis'] != null){                   
+            $query->where(function($qry) use($request){
+                $qry->orWhere('tbl_warehouse.WarehouseCode', 'like', '%'.$request['searchThis'].'%')  
+                ->orWhere('tbl_warehouse.WarehouseName', 'like', '%'.$request['searchThis'].'%');               
+            });      
+        }
+
+        $results = $query->paginate(10);
 
 
         return response()->json($results);
     }   
+
+    public function ExportSalesExcel(Request $request)
+    {               
+        return Excel::download(new SalesExport($request['warehouseCode'],$request['dateFrom'],$request['dateTo']), 'SalesPostedAndUnposted.xlsx');
+    }
 }

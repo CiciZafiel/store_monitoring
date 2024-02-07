@@ -12,7 +12,7 @@
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h3>SAP Posted Today</h3>
+                        <h3>SAP Posted Yesterday</h3>
                     </div>
                         <div class="card-body">
                             <h2 class="card-title text-center">{{ totalPostedSAP }}</h2>
@@ -20,7 +20,7 @@
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h3>Server Posted Today</h3>
+                        <h3>Server Posted Yesterday</h3>
                     </div>
                         <div class="card-body">
                             <h2 class="card-title text-center">{{totalPostedServer}}</h2>
@@ -28,7 +28,7 @@
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h3>SAP Unposted Today</h3>
+                        <h3>SAP Unposted Yesterday</h3>
                     </div>
                         <div class="card-body">
                             <h2 class="card-title text-center">{{totalUnpostedSAPToday}}</h2>

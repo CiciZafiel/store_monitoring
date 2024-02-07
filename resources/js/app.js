@@ -18,6 +18,7 @@ import content_loader from './contents/components/content_loader.vue';
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
+
 const app = createApp(application);
 app.use(router)
     .use(VueSweetalert2)

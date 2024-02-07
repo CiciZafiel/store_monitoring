@@ -41,6 +41,7 @@ Route::controller(App\Http\Controllers\Store\StoreController::class)->group(func
 Route::controller(App\Http\Controllers\Sales\SalesController::class)->group(function() {
     Route::post('/sales-details', 'getSalesData');
     Route::post('/sales-posted-and-unposted-summary', 'getSalesPostedAndUnpostedSummary');
+    Route::post('/store-sales/export-excel', 'ExportSalesExcel');
 });
 
 

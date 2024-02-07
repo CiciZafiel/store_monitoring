@@ -25,6 +25,13 @@ class InventoryController extends Controller
         )
         ->where('tbl_WarehouseItems.WarehouseCode', $request['filter']['store']['warehouse_code'])
         ->orderBy('tbl_Items.ItemCode', 'ASC');
+
+        if($request['searchThis'] != null)
+        {   
+            $query->where(function($qry) use($request){
+                $qry->orWhere('tbl_Items.ItemCode','like', '%' .$request['searchThis']. '%');
+            });
+        }
         
 
         $results = $query->paginate(10);

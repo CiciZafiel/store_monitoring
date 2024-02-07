@@ -29,7 +29,7 @@
                                                         <th style="width: 34%;">Item Code</th>
                                                         <th style="width: 25%;">Serial Availability (Server)</th>
                                                         <th style="width: 25%;">Serial Availability (Store)</th>
-                                                        <th style="width: 16%;">Exist</th>
+                                                        <!-- <th style="width: 16%;">Exist</th> -->
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -37,10 +37,35 @@
                                                         <td>{{ item.ItemCode }}</td>
                                                         <td>{{ item.ServerSerialAvailableCount +' / '+ item.ServerSerialQty }}</td>
                                                         <td>{{ item.StoreSerialAvailableCount +' / '+ item.StoreSerialQty }}</td>
-                                                        <td>{{ item.SerialExistingCount +' / '+ item.StoreSerialQty }}</td>
+                                                        <!-- <td>{{ item.SerialExistingCount +' / '+ item.StoreSerialQty }}</td> -->
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                        </div>
+                                        <!-- 
+                                        |==========================================================================
+                                        | Pagination 
+                                        |==========================================================================
+                                        -->           
+                                        <div  class="d-flex justify-content-center mb-2">
+                                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                                <button type="button" class="btn btn-secondary"
+                                                    @click="getIMEIList(imei_lists.prev_page_url);" 
+                                                    :disabled="imei_lists.prev_page_url===null">Previous
+                                                </button>
+                                                <div class="btn-group" role="group">
+                                                    <select class="px-2" @change="jumPage($event)">
+                                                        <option v-for="(pageNumber, pi) in imei_lists.last_page" 
+                                                            :key="pi"
+                                                            :selected="pageNumber == imei_lists.current_page">{{pageNumber}}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <button type="button" class="btn btn-secondary"
+                                                    @click="getIMEIList(imei_lists.next_page_url);" 
+                                                    :disabled="imei_lists.next_page_url===null">Next
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                </div>
@@ -68,9 +93,9 @@
                                                     <tr class="table-primary">
                                                         <th>Serial 1</th>
                                                         <th>Serial 2</th>
-                                                        <th>IMEI Server Status</th>
-                                                        <th>IMEI Store Status</th>
-                                                        <th>Exist</th>
+                                                        <th>Server IMEI Status</th>
+                                                        <th>Store IMEI Status</th>
+                                                        <!-- <th>Exist</th> -->
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -80,11 +105,11 @@
                                                         <td>{{ item.SuppSerial }}</td>
                                                         <td v-html="getIMEIStatus(item.ServerSerialStatus)"></td>
                                                         <td v-html="getIMEIStatus(item.StoreSerialStatus)"></td>
-                                                        <td v-html="isIMEIExistInStore(index)"></td>
+                                                        <!-- <td v-html="isIMEIExistInStore(index)"></td> -->
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                        </div>
+                                        </div>                                        
                                     </div>
                                </div>
                             </div>
@@ -280,14 +305,14 @@ export default{
 
                     if(!this.item_details[ItemCode]?.[index]){
                         let item_arr_length = this.item_details[ItemCode].length
-
-                        this.item_details[ItemCode][item_arr_length] = {
-                            IntrSerial : 'testing',
-                            SuppSerial :'testing',
-                            ServerSerialStatus : '3',
-                            StoreSerialStatus: 'testing',
-                            Exist : 'testing'
-                        }
+                            
+                        // this.item_details[ItemCode][item_arr_length] = {
+                        //     IntrSerial : 'testing',
+                        //     SuppSerial :'testing',
+                        //     ServerSerialStatus : '3',
+                        //     StoreSerialStatus: 'testing',
+                        //     Exist : 'testing'
+                        // }
                     }
 
 

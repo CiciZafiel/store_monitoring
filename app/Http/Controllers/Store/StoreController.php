@@ -137,7 +137,7 @@ class StoreController extends Controller
 
     public function serialTransactionHistory(Request $request)
     {
-
+       
 
         $sales = DB::connection('serverDB')
         ->table('tbl_SalesSerialNumber')
@@ -146,6 +146,11 @@ class StoreController extends Controller
             'Sales' as TransType,
             tbl_SalesHeader.CreationDate 
         ")
+        ->where(function($qry) use($request){
+            $qry->where('tbl_SalesSerialNumber.ItemCode',$request['item_code'])
+            ->where('tbl_SalesSerialNumber.SystemSerialNumber',$request['supp_serial'])
+            ->where('tbl_SalesSerialNumber.InternalSerialNumber',$request['intr_serial']);
+        })
         ->join('tbl_SalesHeader', 'tbl_SalesHeader.ID', '=', 'tbl_SalesSerialNumber.ID');
 
 
@@ -156,6 +161,11 @@ class StoreController extends Controller
             'Exchange' as TransType,
             tbl_ExchangeHeader.CreationDate
         ")
+        ->where(function($qry) use($request){
+            $qry->where('tbl_SalesSerialNumber.ItemCode',$request['item_code'])
+            ->where('tbl_SalesSerialNumber.SystemSerialNumber',$request['supp_serial'])
+            ->where('tbl_SalesSerialNumber.InternalSerialNumber',$request['intr_serial']);
+        })
         ->join('tbl_ExchangeHeader', 'tbl_ExchangeHeader.ID', '=', 'tbl_ExchangeSerialNumber.ID');
 
 
@@ -166,6 +176,11 @@ class StoreController extends Controller
             'Stock Transfer Recieve' as TransType,
             tbl_StockTransferReceiveHeader.CreationDate
         ")
+        ->where(function($qry) use($request){
+            $qry->where('tbl_SalesSerialNumber.ItemCode',$request['item_code'])
+            ->where('tbl_SalesSerialNumber.SystemSerialNumber',$request['supp_serial'])
+            ->where('tbl_SalesSerialNumber.InternalSerialNumber',$request['intr_serial']);
+        })
         ->join('tbl_StockTransferReceiveHeader', 'tbl_StockTransferReceiveHeader.ID', '=', 'tbl_StockTransferReceiveSerialNumber.ID');
 
 
@@ -176,13 +191,18 @@ class StoreController extends Controller
             'Stock Transfer Shipment' as TransType,
             tbl_StockTransferShipmentHeader.CreationDate
         ")
+        ->where(function($qry) use($request){
+            $qry->where('tbl_SalesSerialNumber.ItemCode',$request['item_code'])
+            ->where('tbl_SalesSerialNumber.SystemSerialNumber',$request['supp_serial'])
+            ->where('tbl_SalesSerialNumber.InternalSerialNumber',$request['intr_serial']);
+        })
         ->join('tbl_StockTransferShipmentHeader', 'tbl_StockTransferShipmentHeader.ID', '=', 'tbl_StockTransferShipmentSerialNumber.ID');
 
 
         $transaction_history = $sales
-        ->unionAll($exchange)
-        ->unionAll($stock_transfer_recieve)
-        ->unionAll($stock_transfer_shipment)
+        // ->unionAll($exchange)
+        // ->unionAll($stock_transfer_recieve)
+        // ->unionAll($stock_transfer_shipment)
         ->orderBy('CreationDate', 'DESC')
         ->get();
 

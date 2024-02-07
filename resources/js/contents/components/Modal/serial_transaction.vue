@@ -8,14 +8,14 @@
         </div>
         <div class="modal-body">
 
-            <ul class="nav nav-tabs">
+            <!-- <ul class="nav nav-tabs">
                 <li class="nav-item">
                     <a class="nav-link" :class="slctd_tab == 'server'? 'active' : '' " aria-current="page" @click="slctd_tab = 'server'">Server</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" :class="slctd_tab == 'store'? 'active' : ''" @click="slctd_tab = 'store'">Store</a>
                 </li>
-            </ul>
+            </ul> -->
 
             <div class="border-start border-end border-bottom p-2">
                 <div class="table-responsive">
@@ -28,6 +28,22 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr v-if="(transaction_history.length <= 0 && !tblLoader )">
+                                <td class="align-middle text-center" colspan="5">
+                                    <span>No data available in table</span>
+                                </td>
+                            </tr>
+                            <tr v-if="tblLoader">
+                                <td class="align-middle" colspan="5">
+                                    <div class="d-flex justify-content-center" >
+                                        <div class="spinner-border" role="status">
+                                        </div>
+                                        <div class="d-flex align-items-center px-2">
+                                            <span class="">Loading...</span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
                             <tr v-for="item,index in transaction_history">
                                 <td>{{ item.ID }}</td>
                                 <td>{{ item.TransType }}</td>
@@ -67,13 +83,14 @@ export default{
             url: {
                 serial_transaction_history: '/api/store/serial-transaction-history',
             },
+
+            tblLoader: false,
         }
     },
 
     methods: {
         getSerialTransactionHistory(WarehouseCode, ItemCode, IntrSerial, SuppSerial){
-            // console.log(`Warehouse: ${WarehouseCode}, ItemCode: ${ItemCode}, IntrSerial: ${IntrSerial}, SuppSerial: ${SuppSerial}`);
-
+            this.tblLoader = true;
             axios.post(this.url.serial_transaction_history,{
                 warehouse_code: WarehouseCode,
                 item_code: ItemCode,
@@ -81,6 +98,7 @@ export default{
                 supp_serial: SuppSerial, 
             }).then(response=>{
                 this.transaction_history = response.data;
+                this.tblLoader = false;
             })
         }
     },

@@ -96,10 +96,9 @@ class DashboardController extends Controller
         ->table('tbl_SalesHeader')
         ->select('SapDocumentNumber')
         ->whereNotNull('SapDocumentNumber')
-        ->whereRaw('CreationDate = GETDATE()')
-        ->get()
+        ->whereRaw('CreationDate = Cast(GETDATE()-1 as Date)')
         ->count();
-        
+     
         return response()->json($results);
     }
 
@@ -110,7 +109,7 @@ class DashboardController extends Controller
         $results = DB::connection('serverDB')
         ->table('tbl_SalesHeader')
         ->selectRaw('*')
-        ->whereRaw('CreationDate = GETDATE()')
+        ->whereRaw('CreationDate = Cast(GETDATE()-1 as Date)')
         ->get()
         ->count();
         
@@ -125,7 +124,7 @@ class DashboardController extends Controller
         ->table('tbl_SalesHeader')
         ->select('SapDocumentNumber')
         ->whereNull('SapDocumentNumber')
-        ->whereRaw('CreationDate = GETDATE()')
+        ->whereRaw('CreationDate = Cast(GETDATE()-1 as Date)')
         ->get()
         ->count();
         
